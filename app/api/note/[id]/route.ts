@@ -2,19 +2,19 @@ import { NextRequest, NextResponse } from 'next/server';
 import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '@/lib/prisma';
 
-export async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
-  console.log("handler", req.method);
-  // const noteId = req.query.id;
-  // switch (req.method) {
-  //   case 'DELETE':
-  //     return DELETE(noteId, req, res);
-  //   default:
-  //     throw new Error(`The HTTP ${req.method} method is not supported at this route.`,);
-  // }
-}
+// export async function handler(
+//   req: NextApiRequest,
+//   res: NextApiResponse,
+// ) {
+//   console.log("handler", req.method);
+//   const noteId = req.query.id;
+//   switch (req.method) {
+//     case 'DELETE':
+//       return DELETE(noteId, req, res);
+//     default:
+//       throw new Error(`The HTTP ${req.method} method is not supported at this route.`,);
+//   }
+// }
 
 // GET /api/note/:id
 export async function GET(request : NextRequest, { params }: { params: { id: number } }) {

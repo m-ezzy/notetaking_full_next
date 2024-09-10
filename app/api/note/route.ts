@@ -2,12 +2,12 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
-export async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  console.log("handler", req.method);
-}
+// export async function handler(
+//   req: NextApiRequest,
+//   res: NextApiResponse
+// ) {
+//   console.log("handler", req.method);
+// }
 export async function GET(req: NextRequest, res: NextResponse) {
   const notes = await prisma.note.findMany();
   // res.json(notes);
