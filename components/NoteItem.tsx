@@ -1,38 +1,69 @@
 "use client";
 import { useState, useRef, RefObject, ReactNode } from "react";
-import { useNotes } from "../contexts/NotesContext";
+import { useFormState, useFormStatus } from "react-dom";
 import { Note } from "@prisma/client";
-import prisma from "../lib/prisma";
-import { deleteNote, updateNote } from "../lib/note-actions";
+import { updateNote, deleteNote } from "@/actions/note";
 
 export default function NoteItem({ note }: { note: Note }) {
-  const titleRef: any = useRef(null);
-  const contentRef: any = useRef(null);
-  const { setNotes } = useNotes();
+  const ref: RefObject<HTMLFormElement> = useRef(null);
+  const [editMode, setEditMode] = useState<boolean>(false);
+  const [updateState, updateDispatch] = useFormState(updateNote, { success: false, error: "", data: null });
+  const [deleteState, deleteDispatch] = useFormState(deleteNote, { success: false, error: "" });
 
-  async function handleClickEdit() {
-    const updatedNote = {
-      ...note,
-      title: titleRef.current.value,
-      content: contentRef.current.value
-    };
-    let data = await updateNote(updatedNote);
-    setNotes(prev => [...prev].map((n: Note) => n.id === note.id ? updatedNote : n));
+  if(updateState.success) {
+    updateState.success = false;
+    // updateState.error = false;
+    setEditMode(prev => false);
   }
-  async function handleClickDelete() {
-    const data: any = await deleteNote(note.id);
-    setNotes((prev: Note[]) => [...prev].filter((n: Note) => n.id !== note.id));
+  // else if(updateState.error) {
+  //   updateState.success = false;
+  //   updateState.error = false;
+  // }
+  // async function handleClickUpdate() {
+  //   setEditMode(prev => false);
+  // }
+  async function handleClickEdit() {
+    setEditMode(prev => true);
+  }
+  async function handleClickCancel() {
+    ref.current.reset();
+    setEditMode(prev => false);
   }
 	return (
-    <div className='min-w-96 min-h-max border-2 border-primary rounded-lg p-2 bg-secondary'>
-      <input type="text" className='w-full block border-b-2 bg-transparent text-xl' defaultValue={note.title} ref={titleRef} />
-      <textarea className='w-full min-h-max bg-transparent resize-none' defaultValue={note.content} ref={contentRef} />
-      <div className='flex justify-end text-sm'>{ new Date(note.updated_at).toUTCString() }</div>
+    <div className="bg-neutral-800 min-h-max border rounded p-2">
+      <form action={updateDispatch} ref={ref}>
+        <input type="number" name="id" value={note.id} required={true} hidden={true} readOnly />
 
-      <div className='mt-2 flex gap-1'>
-        <button className='rounded p-2 bg-primary' onClick={handleClickEdit}>Edit</button>
-        <button className='rounded p-2 bg-primary' onClick={handleClickDelete}>Delete</button>
-      </div>
+        <input type="text" name="title" className='bg-transparent w-full block border-b p-1 text-xl' defaultValue={note.title} disabled={!editMode} />
+        <textarea name="content" className='bg-transparent w-full min-h-max p-1 resize-none' defaultValue={note.content} disabled={!editMode} />
+
+        <div className='flex justify-end gap-1 text-sm'>
+          <span>{new Date(note.updated_at).toDateString()}</span>
+          <span className="text-gray-300">{new Date(note.updated_at).toLocaleTimeString()}</span>
+        </div>
+
+        {editMode && 
+          <div className='mt-2 flex justify-end gap-2'>
+            <button type="submit">Update</button> {/* onClick={handleClickUpdate} */}
+            <button onClick={handleClickCancel}>Cancel</button>
+            {/* {editMode && <button className='bg-zinc-600 border rounded p-2' disabled={updateState.pending} onClick={handleClickReset}>Reset</button> } */}
+          </div>
+        }
+      </form>
+
+      {!editMode && 
+        <div className="mt-2 flex justify-end gap-2">
+          <button onClick={handleClickEdit}>Edit</button> {/* disabled={updateState.pending} */}
+          <form action={deleteDispatch}>
+            <input type="number" name="id" value={note.id} hidden readOnly />
+            <button type="submit">Delete</button>
+          </form>
+        </div>
+      }
+
+      {/* {updateState.success && <div className="text-green-400">{updateState.success}</div>} */}
+      {updateState?.error && <div className="text-red-400 mt-2">{updateState.error}</div>}
+      {deleteState?.error && <div className="text-red-600 mt-2">{deleteState.error}</div>}
     </div>
   );
 }

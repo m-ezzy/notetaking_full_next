@@ -1,49 +1,44 @@
-"use client"
+"use client";
+import { Ref, RefObject, useRef } from "react";
+import { useFormState, useFormStatus } from "react-dom";
+import { createNote } from '@/actions/note';
 
-import { useRef } from 'react';
-import { useFormState } from "react-dom";
-import { useNotes } from '../contexts/NotesContext';
-import { Note } from '@prisma/client';
-import prisma from '../lib/prisma';
-// import makeRequest from '../lib/makeRequest';
-import { createNote } from '../lib/note-actions';
+const initialState = {
+	// message: "",
+	// pending: false,
+	success: false,
+	error: false,
+	// data: null,
+};
 
-export default function NoteModal() {
-	const { setNotes } = useNotes();
-	const titleRef: any = useRef();
-	const contentRef: any = useRef();
-	
-	// const initialState = { error: {}, message: {}, data: {}, loading: false };
-	// const [state, dispatch] = useFormState(createNote, initialState);
-	// if (state.error) {
-	// 	console.error(state.error);
-	// } else if (state.data) {
-	// 	setNotes((prev: Note[]) => [...prev, state.data.note]);
-	// }
+function SubmitButton() {
+  const { action, data, method, pending }: any = useFormStatus();
+	return (
+    <button type="submit" aria-disabled={pending}>
+			Create
+    </button>
+  );
+}
+export default function NoteModal() { //NoteAddForm
+	const ref: Ref<HTMLFormElement> = useRef<HTMLFormElement>(null);
+  const [state, formAction]: any = useFormState(createNote, initialState);
 
-	async function handleClick(e) {
-		e.preventDefault();
-
-		const title = titleRef.current.value;
-		const content = contentRef.current.value;
-		try {
-	    // let data: any = await makeRequest("/api/note/create", { title, content });
-			// let data: any = await prisma.note.create({ data: { title, content } });
-			let data: any = await createNote({ title, content });
-			setNotes((prev: Note[]) => [...prev, data.note]);
-		} catch (error) {
-			console.error(error);
-		}
-		titleRef.current.value = '';
-		contentRef.current.innerText = '';
+	if(state.success) {
+		ref.current.reset();
 	}
 	return (
-		<div className='w-3/5 mx-auto mb-4 border-2 rounded-md p-2'>
-			<form>
-				<input name="title" className='w-full block border-b-2 pb-1 bg-transparent' type='text' placeholder='type title here' autoFocus ref={titleRef} />
-				<textarea name="content" className='w-full min-h-10 bg-transparent resize-none' ref={contentRef} placeholder='type content here'></textarea>
+		<div className='w-full mx-auto border rounded p-2 lg:w-3/5'>
+			<form action={formAction} ref={ref}>
+				{/* <label htmlFor="title">Title</label> */}
+				<input type='text' name="title" className='w-full block bg-transparent border-b p-1' placeholder='Type title here' autoFocus /> {/* defaultValue={state.data.title} */}
+				{/* <label htmlFor="content">Content</label> */}
+				<textarea name="content" className='w-full min-h-10 bg-transparent resize-none p-1' placeholder='Type content here'></textarea> {/* defaultValue={state.data.content} */}
 				{/* <div className="w-full min-h-10 bg-transparent" role="text" contentEditable></div> */}
-				<button className='rounded p-2 bg-primary text-xl text-bold' type="submit" onClick={handleClick}>Create</button>
+
+				<SubmitButton />
+
+				{state.success && <p className="text-green-400 mt-2">{state.success}</p>}
+  	    {state.error && <p className="text-red-400 mt-2">{state.error}</p>}
 			</form>
 		</div>
 	);

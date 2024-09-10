@@ -1,30 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { NextApiRequest, NextApiResponse } from 'next';
-import prisma from '../../../../lib/prisma';
+import prisma from '@/lib/prisma';
 
-export default async function handle(
+export async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const noteId = req.query.id;
-
+  console.log("handler", req.method);
+  // const noteId = req.query.id;
   // switch (req.method) {
   //   case 'DELETE':
-  //     return DELETE(noteId, res)
+  //     return DELETE(noteId, req, res);
   //   default:
-  //     throw new Error(
-  //       `The HTTP ${req.method} method is not supported at this route.`,
-  //     );
+  //     throw new Error(`The HTTP ${req.method} method is not supported at this route.`,);
   // }
 }
 
 // GET /api/note/:id
-export async function GET(request : NextRequest,{ params }: { params: { id: number } }) {
-  const id =  params.id
-  const post = await prisma.note.findUnique({
+export async function GET(request : NextRequest, { params }: { params: { id: number } }) {
+  const id: number =  Number(params.id);
+  const note: any = await prisma.note.findUnique({
     where: { id: id },
+  })
+  .then((note) => {
+    return NextResponse.json(note);
+  })
+  .catch((error: any) => {
+    return NextResponse.json({ error: error });
   });
-  return NextResponse.json(post);
+  return note;
 }
 
 // UPDATE /api/note/:id
@@ -47,10 +51,13 @@ export async function PUT(req: NextRequest, res: NextApiResponse, { params }: { 
 
 // DELETE /api/note/:id
 export async function DELETE(request : NextRequest, response: NextResponse, { params }: { params: { id: number } }) {
-  const id =  params.id;
- const deletedNote = await prisma.note.delete({
-    where: { id: id },
+  const deletedNote = await prisma.note.delete({
+    where: { id: params.id },
+  })
+  .catch((error) => {
+    // response.status(500).json(error);
   });
-  // return res.json(note)
+  // response.json(deletedNote);
+  // return res.json(note);
   return NextResponse.json({ message: "Delete success" });
 }

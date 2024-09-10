@@ -1,38 +1,28 @@
-
-import NoteItem from './NoteItem';
-import { useNotes } from '../contexts/NotesContext';
 import { Note } from '@prisma/client';
-import prisma from '../lib/prisma';
-import { getNotes } from '../lib/note-actions';
-
-// export default async NoteList({notesData:any}) => {
-//   const { notes, setNotes }: any = useNotes();
-
-//   // useEffect(() => {
-//   //   (async () => {
-//   //     // const notesData: any = await prisma.note.findMany({ orderBy: { updated_at: 'desc' } });
-//   //     const notesData: any = await getNotes();
-//   //     console.log(notesData);
-//   //     setNotes(notesData);
-//   //   })();
-//   // }, []);
-// }
-
+import prisma from '@/lib/prisma';
+// import { list } from '@/logic/note';
+import NoteItem from './NoteItem';
 
 export default async function NoteList() {
-  // const notes = await getNotes();
-  const notes = await prisma.note.findMany();
+  // const notes: any = await list();
+  const notes: any = await prisma.note.findMany({
+    orderBy: { updated_at: 'desc' }
+  })
+  .catch((error) => {
+    return { error: error.message };
+  });
+
+  if(notes.error) {
+    return <div>{notes.error.message}</div>;
+  } else if(notes.length === 0) {
+    return <div>No notes found</div>;
+  }
+
+  const noteItems: any = notes.map((note: Note) => <NoteItem key={note.id} note={note} />);
+
   return (
-    <div className='p-4 flex flex-wrap gap-4'>
-      {notes.length == 0 ? 
-        <div>Loading...</div> : notes.map(note => <div key={note.id}><NoteItem note={note} /></div>)
-      }
+    <div className='p-4 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
+      {noteItems}
     </div>
   );
 }
-
-
-// export async function notes() {
-//   const notesData: any = await getNotes();
-//   return await NoteList({notesData});
-// }

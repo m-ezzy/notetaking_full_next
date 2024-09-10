@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  /* font-family: Arial, Helvetica, sans-serif; */
+  font-family: 'Courier New', Courier, monospace;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+input {
+  @apply p-1;
+}
+textarea {
+  @apply p-1;
+}
+button {
+  @apply bg-neutral-700 border rounded p-2 disabled:cursor-not-allowed; /* gray neutral slate zinc */
+}
+
+/* button[aria-disabled="true"] {
+  @apply bg-neutral-400;
+} */
+
+/* button {
+  color: white;
+  background-color: black;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 24px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 16px;
+} */
+/* button:hover {
+  opacity: 0.8;
+} */
+/* button[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+} */

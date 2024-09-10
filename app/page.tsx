@@ -1,14 +1,11 @@
-import NoteModal from '../components/NoteModal';
-import NoteList from '../components/NoteList';
-import { NotesContextProvider } from '../contexts/NotesContext';
+import NoteModal from '@/components/NoteModal';
+import NoteList from '@/components/NoteList';
 
-export default function Notes() {
+export default function page() {
   return (
     <>
-      <NotesContextProvider>
-        <NoteModal />
-        <NoteList />
-      </NotesContextProvider>
+      <NoteModal />
+      <NoteList />
     </>
   );
 }
