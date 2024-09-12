@@ -28,7 +28,7 @@ export async function createNote(prevState: any, formData: FormData) {
     revalidatePath("/");
     return { pending: false, success: "Created successfull", data: result }
   } catch (err: any) {
-    return { pending: false, error: "Failed to create | " + err.message }
+    return { pending: false, error: "Failed to create | " + err.meta.cause }
   }
 
   /* 2. using promise's methods */
@@ -43,7 +43,7 @@ export async function createNote(prevState: any, formData: FormData) {
   //   return { success: "Created successfully" }
   // })
   // .catch((err: any) => {
-  //   return { error: `Failed to create | ${err.message}` }
+  //   return { error: `Failed to create | ${err.meta.cause}` }
   // });
   // return result;
 
@@ -69,14 +69,14 @@ export async function updateNote(prevState: any, formData: FormData) {
     return { success: "Updation successfull" }
   })
   .catch((err: any) => {
-    return { error: `Updation failed | ${err.message}` }
+    return { error: `Updation failed | ${err.meta.cause}` }
   });
   return result;
 }
 export async function deleteNote(prevState: any, formData: FormData) {
   let result: any = await prisma.note.delete({
     where: {
-      id: parseInt(formData.get("id") as string)
+      id: parseInt(formData.get("id") as string),
     }
   })
   .then(() => {
@@ -84,7 +84,7 @@ export async function deleteNote(prevState: any, formData: FormData) {
     return { success: "Note deleted successfully" }
   })
   .catch((err: any) => {
-    return { error: `Failed to delete note | ${err.message}` }
+    return { error: `Failed to delete note | ${err.meta.cause}` }
   });
   return result;
 }

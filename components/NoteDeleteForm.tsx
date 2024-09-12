@@ -10,19 +10,18 @@ const initialState = {
 
 function DeleteButton() {
   const { pending } = useFormStatus();
-
   return (
-    <button type="submit" aria-disabled={pending}>Delete</button>
+    <button type="submit" disabled={pending}>Delete</button>
   );
 }
 export function NoteDeleteForm({ id }: { id: number }) {
-  const [state, formAction] = useFormState(deleteNote, null);
+  const [state, dispatch] = useFormState(deleteNote, null);
 
   return (
-    <form action={formAction}>
-      <input type="hidden" name="id" value={id} />
+    <form action={dispatch}>
+      <input type="number" name="id" value={id} readOnly hidden />
       <DeleteButton />
-      {state?.error ? <span>{state.error}</span> : null}
+      {state?.error ? <span className="text-red-400 ml-2">{state.error}</span> : null}
     </form>
   );
 }

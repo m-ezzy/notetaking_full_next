@@ -1,14 +1,16 @@
 "use client";
+
 import { useState, useRef, RefObject, ReactNode } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { Note } from "@prisma/client";
 import { updateNote, deleteNote } from "@/actions/note";
+import { NoteDeleteForm } from "./NoteDeleteForm";
 
 export default function NoteItem({ note }: { note: Note }) {
   const ref: RefObject<HTMLFormElement> = useRef(null);
   const [editMode, setEditMode] = useState<boolean>(false);
   const [updateState, updateDispatch] = useFormState(updateNote, { success: false, error: "", data: null });
-  const [deleteState, deleteDispatch] = useFormState(deleteNote, { success: false, error: "" });
+  // const [deleteState, deleteDispatch] = useFormState(deleteNote, { success: false, error: "" });
 
   if(updateState.success) {
     updateState.success = false;
@@ -54,16 +56,17 @@ export default function NoteItem({ note }: { note: Note }) {
       {!editMode && 
         <div className="mt-2 flex justify-end gap-2">
           <button onClick={handleClickEdit}>Edit</button> {/* disabled={updateState.pending} */}
-          <form action={deleteDispatch}>
+          <NoteDeleteForm id={note.id} />
+          {/* <form action={deleteDispatch}>
             <input type="number" name="id" value={note.id} hidden readOnly />
             <button type="submit">Delete</button>
-          </form>
+          </form> */}
         </div>
       }
 
-      {/* {updateState.success && <div className="text-green-400">{updateState.success}</div>} */}
+      {updateState.success && <div className="text-green-400 mt-2">{updateState.success}</div>}
       {updateState?.error && <div className="text-red-400 mt-2">{updateState.error}</div>}
-      {deleteState?.error && <div className="text-red-600 mt-2">{deleteState.error}</div>}
+      {/* {deleteState?.error && <div className="text-red-400 mt-2">{deleteState.error}</div>} */}
     </div>
   );
 }
