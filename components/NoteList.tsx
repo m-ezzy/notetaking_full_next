@@ -21,7 +21,7 @@ export default async function NoteList() {
   const noteItems: any = notes.map((note: Note) => <NoteItem key={note.id} note={note} />);
 
   return (
-    <div className='p-4 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
+    <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
       {noteItems}
     </div>
   );

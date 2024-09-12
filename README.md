@@ -15,3 +15,5 @@ Database Hosting Provider: Vercel
 # References
 https://github.com/vercel/next.js/blob/main/examples/next-forms/
 https://github.com/vercel/next.js/blob/main/examples/with-postgres/
+https://www.prisma.io/docs/orm/more/help-and-troubleshooting/help-articles/vercel-caching-issue
+https://www.prisma.io/docs/orm/prisma-client/deployment/serverless/deploy-to-vercel

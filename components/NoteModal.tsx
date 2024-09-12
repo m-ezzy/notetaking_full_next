@@ -14,7 +14,7 @@ const initialState = {
 function SubmitButton() {
   const { action, data, method, pending }: any = useFormStatus();
 	return (
-    <button type="submit" aria-disabled={pending}>
+    <button type="submit" disabled={pending}>
 			Create
     </button>
   );

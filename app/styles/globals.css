@@ -27,19 +27,19 @@ body {
   }
 }
 
+/*
 input {
   @apply p-1;
 }
 textarea {
   @apply p-1;
-}
-button {
-  @apply bg-neutral-700 border rounded p-2 disabled:cursor-not-allowed; /* gray neutral slate zinc */
-}
-
-/* button[aria-disabled="true"] {
-  @apply bg-neutral-400;
 } */
+button {
+  @apply bg-neutral-700 border rounded p-2 disabled:cursor-not-allowed aria-disabled:cursor-not-allowed; /* gray neutral slate zinc */
+}
+button[aria-disabled="true"], button:disabled {
+  @apply bg-neutral-500;
+}
 
 /* button {
   color: white;
